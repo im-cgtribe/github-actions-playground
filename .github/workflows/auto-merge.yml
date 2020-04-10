@@ -11,15 +11,19 @@ jobs:
   merge:
     runs-on: macOS-latest
     steps:
+    - name: Debug
+      run: echo "${{format('MERGE_{0}', github.ref)}} ${{env[format('MERGE_{0}', github.ref)]}}"
+    - name: Debug Env
+      run: echo "${{toJSON(env)}}"
     - uses: actions/checkout@v2
       with:
         ref: ${{ env[format('MERGE_{0}', github.ref)] }}
         fetch-depth: 0
     - name: Merge
       run: |
-        git fetch ${{ github.repository }} ${{ github.ref }}
+        git fetch origin ${{ github.ref }}
         git merge FETCH_HEAD
     - name: Push
       run: |
-        git push ${{ github.repository }} HEAD:${{ env[format('MERGE_{0}', github.ref)] }}
+        git push origin HEAD:${{ env[format('MERGE_{0}', github.ref)] }}
 
