@@ -16,6 +16,7 @@ jobs:
       with:
         ref: ${{ env[format('MERGE/{0}', github.ref)] }}
         fetch-depth: 0
+        token: ${{ secrets.PUSH_TOKEN }}
     - name: Merge
       run: |
         git fetch origin ${{ github.ref }}
