@@ -2,19 +2,16 @@ name: auto-merge
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, dev ]
 
 env:
   MERGE/refs/heads/master: refs/heads/dev
-  MERGE_DEV: future
+  MERGE/refs/heads/dev: refs/heads/future
+
 jobs:
   merge:
     runs-on: macOS-latest
     steps:
-    - name: Debug
-      run: echo "${{format('MERGE/{0}', github.ref)}} ${{env[format('MERGE/{0}', github.ref)]}}"
-    - name: Debug Env
-      run: echo "${{toJSON(env)}}"
     - uses: actions/checkout@v2
       with:
         ref: ${{ env[format('MERGE/{0}', github.ref)] }}
