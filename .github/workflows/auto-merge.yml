@@ -1,0 +1,25 @@
+name: auto-merge
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  MERGE_MASTER: dev
+  MERGE_DEV: future
+jobs:
+  merge:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ env[format('MERGE_{0}', github.ref)] }}
+        fetch-depth: 0
+    - name: Merge
+      run: |
+        git fetch ${{ github.repository }} ${{ github.ref }}
+        git merge FETCH_HEAD
+    - name: Push
+      run: |
+        git push ${{ github.repository }} HEAD:${{ env[format('MERGE_{0}', github.ref)] }}
+
