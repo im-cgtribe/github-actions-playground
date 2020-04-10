@@ -17,10 +17,17 @@ jobs:
         ref: ${{ env[format('MERGE/{0}', github.ref)] }}
         fetch-depth: 0
         token: ${{ secrets.PUSH_TOKEN }}
+
     - name: Merge
       run: |
         git fetch origin ${{ github.ref }}
         git merge FETCH_HEAD
+
+    - name: Get conflicts
+      if: failure()
+      run: |
+        git rev-list --topo-order --merge --pretty=format:%ae HEAD..FETCH_HEAD
+
     - name: Push
       run: |
         git push origin HEAD:${{ env[format('MERGE/{0}', github.ref)] }}
